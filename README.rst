@@ -31,7 +31,7 @@ The audience for Covasim is *scientists*, not software developers. Assume that t
 Workload considerations
 -----------------------
 
-The total work your code creates is::
+The total work your code creates is:
 
     *W* = Σ(*u* + *n*×*r* + *m*×*e*)
 
