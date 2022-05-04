@@ -38,7 +38,7 @@ The total work your code creates is:
 where:
 
 - *W* is the total work
-- the sumer is over each person
+- Σ is a sum over each person
 - *u* is the ramp-up time
 - *n* is the number of reads
 - *r* is the time per read
