@@ -57,7 +57,7 @@ Implications of this include:
 House style
 ===========
 
-As noted above, Covasim follows Google's style guide (GSG), with these exceptions (numbers refer to Google's style guide):
+As noted above, Covasim follows Google's style guide (GSG), **with these exceptions** (numbers refer to Google's style guide):
 
 
 
