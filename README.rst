@@ -87,7 +87,7 @@ Attempting to apply type annotations to the flexibility Covasim gives to the use
                    end_day: typing.Union[None, str, int, dt.date, dt.datetime]) -> int:
         return self.day(end_day) - self.day(start_day)
 
-If your function is written in such a way that type definitions would be helpful, consider if there is a way to rewrite it such that (a) it can accept a wider range of inputs, and/or (b) you can make it clearer what is allowed. For example, ``values`` should likely accept a list or array of any numeric type; ``label`` should be a single string; ``labels`` should be a list of strings.
+If your function is written in such a way that type definitions would be helpful, consider if there is a way to rewrite it such that (a) it can accept a wider range of inputs, and/or (b) you can make it clearer what is allowed. For example, a variable called ``values`` should likely accept a list or array of any numeric type; a variable called ``label`` should be a single string; ``labels`` should be a list of strings.
 
 Note that you *can* (and should) use type annotations in your docstrings. For example, the above method could be written as:
 
