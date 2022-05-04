@@ -33,7 +33,7 @@ Workload considerations
 
 The total work your code creates is:
 
-    *W* = Σ(*u* + *n*×*r* + *m*×*e*)
+    *W* = Σ(*u + n×r + m×e*)
 
 where:
 
