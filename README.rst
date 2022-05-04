@@ -341,4 +341,6 @@ Underscores in variable names are generally preferred, but there are exceptions 
 Parting words
 -------------
 
-If in doubt, ask! Slack, Teams, email, GitHub -- all work. And don't worry about getting it perfect; any differences in style will be reconciled during code review and merge.
+If in doubt, ask! Slack, Teams, email, GitHub -- all work. And don't worry about getting it perfect; any issues with style should be corrected during code review and merge. 
+
+Finally, note there is no need to achieve complete stylistic uniformity. If this were the aim, we'd just use the `Black <https://github.com/psf/black>`_ code autoformatter, for example. Think of it like writing an academic paper: there are writing conventions in each academic subfield, and following these conventions improves clarity and understanding within that community. However, a well-written paper doesn't sound like it was algorithmically generated; the author's unique voice should still shine through.
