@@ -31,16 +31,14 @@ The audience for Covasim is *scientists*, not software developers. Assume that t
 Workload considerations
 -----------------------
 
-The total work your code creates is:
+The total work your code creates is::
 
-.. math::
-
-    W = \sum_p \left( u_p + n_p \times r_p + m_p \times e_p \right)
+    *W* = Σ(*u* + *n*×*r* + *m*×*e*)
 
 where:
 
 - *W* is the total work
-- *p* is each person
+- the sumer is over each person
 - *u* is the ramp-up time
 - *n* is the number of reads
 - *r* is the time per read
