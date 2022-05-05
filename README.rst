@@ -151,7 +151,7 @@ Examples:
 
 **Difference**: Always use (at least) one extra blank line between levels as within a level.
 
-**Reason**: Google's recommendation (two blank lines between functions or classes, one blank line between methods) is appropriate for small-to-medium classes and methods. However, for large methods (e.g. >50 lines) with multiple blank lines within them, using only a single blank line can mark it hard to tell where one method stops and the next one starts. Thus, for a method that contains blank lines within itself, use *two* blank lines between methods (and then do that consistently for the rest of the class). For separating large classes/functions (>500 lines), or classes whose methods are separated by two blank lines, separating them by three blank lines is preferable.
+**Reason**: Google's recommendation (two blank lines between functions or classes, one blank line between methods) is appropriate for small-to-medium classes and methods. However, for large methods (e.g. >50 lines) with multiple blank lines within them, using only a single blank line can make it hard to tell where one method stops and the next one starts. Thus, for a method that contains blank lines within itself, use *two* blank lines between methods (and then do that consistently for the rest of the class). For separating large classes/functions (>500 lines), or classes whose methods are separated by two blank lines, separating them by three blank lines is preferable.
 
 While not explicitly covered by the Google style guide, ``return`` statements should be used at the end of each function and method, even if that block returns ``None`` (in which case use ``return``, not ``return None``). This helps delimit larger methods/functions. However, always ask whether a function/method *should* return ``None``. Following the pandas convention, many Covasim methods return ``self``, which is what enables "chaining" patterns such as ``cv.Sim().run().plot()``.
 
@@ -164,7 +164,7 @@ While not explicitly covered by the Google style guide, ``return`` statements sh
 
 **Reason**: This convention, which is a type of `semantic indenting <https://gist.github.com/androidfred/66873faf9f0b76f595b5e3ea3537a97c>`_, can greatly increase readability of the code by drawing attention to the semantic similarities and differences between consecutive lines.
 
-Consider how hard it is to debug this code:
+Consider how much harder it is to debug this code:
 
 .. code-block:: python
 
@@ -176,7 +176,7 @@ Consider how hard it is to debug this code:
     self.flows['new_critical'] += self.check_critical()
     self.flows['new_recoveries'] += self.check_recovery()
 
-vs. this:
+compared to this:
 
 .. code-block:: python
 
@@ -190,7 +190,7 @@ vs. this:
 
 In the second case, the typo (repeated ``check_symptomatic()``)  immediately jumps out, whereas in the first case, it requires careful scanning of each line.
 
-Vertically aligned code blocks also make it easier to edit code using editors that allow multiline editing (e.g., `Sublime <https://www.sublimetext.com/>`_). However, use your judgement -- there are cases where it does more harm than good, especially if the block is small, or if egregious amounts of whitespace would need to be used to achieve alignment:
+Vertically aligned code blocks also make it easier to edit code using editors that allow multiline editing (e.g., `Sublime <https://www.sublimetext.com/>`_). However, use your judgement -- there are (many!) cases where it does more harm than good, especially if the block is small, or if egregious amounts of whitespace would need to be used to achieve alignment:
 
 .. code-block:: python
 
@@ -223,16 +223,16 @@ Vertically aligned code blocks also make it easier to edit code using editors th
 
 **Difference**: Always use f-strings or addition.
 
-**Reason**: It's just nicer. Compared to ``'{}, {}'.format(first, second)`` or ``'%s, %s' % (first, second)``, ``f'{first}, {second}'`` is both shorter and clearer to read. However, use concatenation if it's simpler, e.g. ``third = first + second`` rather than ``third = f'{first}{second}'`` (because again, it's shorter and clearer).
+**Reason**: It's just nicer. Compared to ``'{}, {}'.format(first, second)`` or ``'%s, %s' % (first, second)``, the more modern ``f'{first}, {second}'`` is both shorter and clearer to read. However, use concatenation if it's simpler, e.g. ``third = first + second`` rather than ``third = f'{first}{second}'`` (because again, it's shorter and clearer).
 
 
 
 3.13 Imports formatting (`GSG313 <https://google.github.io/styleguide/pyguide.html#313-imports-formatting>`_)
 -------------------------------------------------------------------------------------------------------------
 
-**Difference**: Group imports logically rather than alphabetically.
+**Difference**: Imports should be ordered logically rather than alphabetically.
 
-**Reason**: Covasim modules shouldn't need a long list of imports. Sort imports as in Google's style guide, but second-order sorting should be grouped by "level", e.g. low-level libraries first (e.g. file I/O), then high-level libraries last (e.g., plotting). For example:
+**Reason**: Covasim modules shouldn't need a long list of imports. Sort imports as in Google's style guide (from most-generic to most-specific libraries), but second-order sorting should also be done logically, rather than alphabetically. For example:
 
 .. code-block:: python
 
@@ -245,9 +245,10 @@ Vertically aligned code blocks also make it easier to edit code using editors th
     from .covasim import defaults as cvd
     from .covasim import plotting as cvpl
 
-Note the logical groupings -- standard library imports first, then numeric libraries, with Numpy coming before pandas since it's lower level; then external plotting libraries; and finally internal imports.
+Note the logical groupings -- standard library imports first, then numeric libraries, with Numpy coming before pandas since it's lower level (i.e., Numpy is a dependency of pandas); then external plotting libraries; and finally internal imports. (In this particular example, Google's import order would be identical, but for a different reason -- ``numpy`` would come before ``seaborn`` because it's first alphabetically, not because it's lower level.)
 
 Note also the use of ``import pylab as pl`` instead of the more common ``import matplotlib.pyplot as plt``. These are functionally identical; the former is used simply because it is easier to type, but this convention may change to the more standard Matplotlib import in future.
+
 
 
 3.14 Statements (`GSG314 <https://google.github.io/styleguide/pyguide.html#314-statements>`_)
@@ -259,16 +260,20 @@ Note also the use of ``import pylab as pl`` instead of the more common ``import 
 
 .. code-block:: python
 
-    # Yes
+    # OK
+    if foo:
+        bar(foo)
+
+    # Also OK
     if foo: bar(foo)
 
-    # Yes
+    # OK
     if foo:
         bar(foo)
     else:
         baz(foo)
 
-    # Borderline
+    # Also OK
     if foo: bar(foo)
     else:   baz(foo)
 
@@ -338,9 +343,10 @@ Names should be as short as they can be while being *memorable*. This is slightl
 Underscores in variable names are generally preferred, but there are exceptions (e.g. ``figsize`` mentioned above). Always ask whether part of a multi-part name is providing necessary clarity (and if it's not, omit it). For example, if an intervention called ``antigen_test()`` uses a single variable for probability, call that variable ``prob`` rather than ``test_prob``.
 
 
+
 Parting words
 -------------
 
 If in doubt, ask! Slack, Teams, email, GitHub -- all work. And don't worry about getting it perfect; any issues with style should be corrected during code review and merge. 
 
-Finally, note there is no need to achieve complete stylistic uniformity. If this were the aim, we'd just use the `Black <https://github.com/psf/black>`_ code autoformatter, for example. Think of it like writing an academic paper: there are writing conventions in each academic subfield, and following these conventions improves clarity and understanding within that community. However, a well-written paper doesn't sound like it was algorithmically generated; the author's unique voice should still shine through.
+Finally, note that the aim is not to achieve complete stylistic uniformity. If it were, we'd just use the `Black <https://github.com/psf/black>`_ code autoformatter, for example. Think of it like writing an academic paper: there are writing conventions in each academic subfield, and following these conventions improves clarity and understanding within that community. However, well-written papers don't sound like they were algorithmically generated; the author's unique voice should still shine through.
