@@ -101,7 +101,7 @@ Note that you *can* (and should) use type annotations in your docstrings. For ex
             end_day   (int/str/date): The day to stop counting
 
         Returns:
-            Number of days elapsed
+            elapsed (int): Number of whole days between start and end
 
         **Example**::
         
