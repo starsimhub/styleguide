@@ -1,4 +1,4 @@
-Zen of IDM*
+Zen of IDM†
 ===========
 
 The more common a task is, the easier it should be to do.
@@ -45,13 +45,13 @@ Now is better than hopefully soonish: prioritize code that provides immediate be
 
 Iterate quickly: code is an experiment; the more you experiment, the more you learn.
 
-Sometimes a day spent coding can save five minutes asking a researcher what they need.**
+Sometimes a day spent coding can save five minutes asking a researcher what they need.‡
 
 Ask yourself: will your code ultimately help save lives? If not, does it have purpose?
 
 
-* Inspired by the Zen of Python:  https://www.python.org/dev/peps/pep-0020/
+† Inspired by the Zen of Python:  https://www.python.org/dev/peps/pep-0020/
 
-** https://en.wikiquote.org/wiki/Frank_Westheimer 
+‡ https://en.wikiquote.org/wiki/Frank_Westheimer 
  
 Contributors: Ace Thompson, Charles Eliot, Cliff Kerr, Dan Klein, Dina Mistry, Edward Wenger, Mary Fisher
