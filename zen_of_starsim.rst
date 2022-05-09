@@ -1,5 +1,5 @@
-Zen of IDM†
-===========
+Zen of Starsim†
+===============
 
 The more common a task is, the easier it should be to do.
 
