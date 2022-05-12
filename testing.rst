@@ -29,9 +29,9 @@ At the most abstract end of this spectrum, we have integration tests which valid
 They specifically target system-level issues. These tests reduce the amount of time it takes to debug the code by providing additional code coverage. 
 Although unittests might satisfy the metric of code coverage, integration tests expand coverage by probing common module combinations (such as running a sim and plotting).
 
-`Integration tests <https://www.testingxperts.com/blog/what-is-integration-testing#What%20is%20Integration%20Testing?>_` should have the following characteristics:
+`Integration tests <https://www.testingxperts.com/blog/what-is-integration-testing#What%20is%20Integration%20Testing?>`_ should have the following characteristics:
 1.	Tests should combine multiple features in a way that is common in the user’s workflow
-2.	Tests should prioritize feature combinations with `high churn and complexity <https://repository.lib.ncsu.edu/bitstream/handle/1840.4/4092/TR-2009-10.pdf?sequence=1#:~:text=Complexity%20metrics%20measure%20the%20structural,occurred%20during%20development%20of%20code>_`
+2.	Tests should prioritize feature combinations with `high churn and complexity <https://repository.lib.ncsu.edu/bitstream/handle/1840.4/4092/TR-2009-10.pdf?sequence=1#:~:text=Complexity%20metrics%20measure%20the%20structural,occurred%20during%20development%20of%20code>`_
 3.	Tests should be reasonably fast so that they can be run whenever code is contributed to the repository
 
 If an issue has escaped unittests but is caught by the integration tests then it is likely a systems level issue. 
