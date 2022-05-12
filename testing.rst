@@ -114,6 +114,7 @@ Unittests
 - Must be able to log all data that is relevant to detecting a bug in the domain of the test case, ideally through an optional verbose mode
 
 Integration tests
+
 - Ease of use with a debugger is top priority
 - Must have time profiling for each test script
 
