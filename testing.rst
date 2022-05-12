@@ -106,6 +106,8 @@ Test design
 - Anything tests write to disk should be easily removable
 - Tests should not output files by default
 
+  
+  
   Unittests
 
 - Each individual test should contain docstring that details what is being tested, how it is tested (what it's being checked against), and the expected value
@@ -115,6 +117,8 @@ Test design
 - Must display error message information that is sufficient to create a bug report (summary, expected value, and actual value)
 - Must be able to log all data that is relevant to detecting a bug in the domain of the test case, ideally through an optional verbose mode
 
+  
+  
   Integration tests
 
 - Ease of use with a debugger is top priority
