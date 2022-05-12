@@ -109,6 +109,7 @@ Test design
   
   
   Unittests
+  ---------
 
 - Each individual test should contain docstring that details what is being tested, how it is tested (what it's being checked against), and the expected value
 - Setup should be encapsulated as a function to group together shared configuration resources
@@ -120,6 +121,7 @@ Test design
   
   
   Integration tests
+  -----------------
 
 - Ease of use with a debugger is top priority
 - Must have time profiling for each test script
