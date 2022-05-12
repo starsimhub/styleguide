@@ -17,9 +17,10 @@ major release. Besides the metric of code coverage, it it is good practice to cr
 At the least abstract end of the spectrum we have unittests, which examine a very specific feature or use case in the code. 
 
 `Unittests <https://pylonsproject.org/community-unit-testing-guidelines.html>`_ should have the following characteristics:
+
 1. Tests should be as simple as possible while also exercising the software completely
-2.	Tests should run as quickly as possible to encourage running them frequently during development
-3.	Tests should be completely independent and should not couple with other tests or parts of the software they are not responsible for testing
+2. Tests should run as quickly as possible to encourage running them frequently during development
+3. Tests should be completely independent and should not couple with other tests or parts of the software they are not responsible for testing
 
 In other words, the main purpose of unittests is to isolate bugs explicitly so that the user can fix the bug quickly. 
 They are especially important to run in the beginning of the development process because they confirm that basic features of 
@@ -30,9 +31,10 @@ They specifically target system-level issues. These tests reduce the amount of t
 Although unittests might satisfy the metric of code coverage, integration tests expand coverage by probing common module combinations (such as running a sim and plotting).
 
 `Integration tests <https://www.testingxperts.com/blog/what-is-integration-testing#What%20is%20Integration%20Testing?>`_ should have the following characteristics:
-1.	Tests should combine multiple features in a way that is common in the user’s workflow
-2.	Tests should prioritize feature combinations with `high churn and complexity <https://repository.lib.ncsu.edu/bitstream/handle/1840.4/4092/TR-2009-10.pdf?sequence=1#:~:text=Complexity%20metrics%20measure%20the%20structural,occurred%20during%20development%20of%20code>`_
-3.	Tests should be reasonably fast so that they can be run whenever code is contributed to the repository
+
+1. Tests should combine multiple features in a way that is common in the user’s workflow
+2. Tests should prioritize feature combinations with `high churn and complexity <https://repository.lib.ncsu.edu/bitstream/handle/1840.4/4092/TR-2009-10.pdf?sequence=1#:~:text=Complexity%20metrics%20measure%20the%20structural,occurred%20during%20development%20of%20code>`_
+3. Tests should be reasonably fast so that they can be run whenever code is contributed to the repository
 
 If an issue has escaped unittests but is caught by the integration tests then it is likely a systems level issue. 
 Rather than standardized and specific output which helps isolate the error, it may be necessary to use developer tools like an IDE’s debugger to further isolate the issue. 
@@ -47,6 +49,7 @@ Developers often spend a lot of time probing the software to determine which par
 Tests should reduce this amount of time by providing relevant and interpretable information about an error. 
 Unittests should be the developer’s first tool in isolating test failure because they are designed to be as granular as possible. 
 In general:
+
 1. Error messages should be sufficient to create a standard bug report with summary of issue, expected result, and actual result
   a. If someone is reviewing a PR and sees a test failure, they should be able to write a bug report and assign it to the PR owner without having to inspect further
 2. An optional verbose mode should provide all information necessary in isolating the bug
@@ -57,13 +60,12 @@ Because of this problem, we recommend the following debug / update workflow:
 
 1.	When an individual writes an entirely new feature, they must either add a unittest or request a unittest to cover the new feature before merging.
 2.	In the case of errant code, the tests must produce error messages in GHA that should specify the nature of the test failure, what value is expected, what the actual value is, and ideally some context for the bug (such as a variable’s values leading up to the error). The error message should contain all the information required to write a bug report.
-3.	If the user can't determine the source of the bug from the error message, they can run the test locally using command line arguments to specify verbose mode 
-  a.	``pytest test_states.py::TestStates::test_gestation -v``
+3.	If the user can't determine the source of the bug from the error message, they can run the test locally using command line arguments to specify verbose mode           ``pytest test_states.py::TestStates::test_gestation -v``
 4.	Verbose mode should provide all information that might be relevant for debugging the code. It does this by saving files (or "artifacts") that contain all relevant information in a well-formatted and interpretable file.
-  a.	Part of the design structure of the test suite should be to clear out old output files during teardown. Then, if the user runs the suite without verbose on it will delete all the outdated files.
+    Part of the design structure of the test suite should be to clear out old output files during teardown. Then, if the user runs the suite without verbose on it will delete all the outdated files.
 5.	As a last resort, the user should be able to use a debugger with the test, specifically the built-in python debugger package.
 6.	If a debugger is ever required to find a bug, the user must specify what information was not made available by the test's verbose mode and make an issue for a test patch.
-  a.	If the failing test is an integration test, the user may suggest an improvement to the error messaging that will help isolate the bug next time
+    If the failing test is an integration test, the user may suggest an improvement to the error messaging that will help isolate the bug next time
 7.	If the information was included in the artifacts left behind by verbose mode but is not easily interpretable, an issue must be made to patch the tests with a better formatted artifact.
 8.	The tester (or whoever is in charge of test) must incorporate this new information (or format) into the test's verbose mode in a timely manner.
 
