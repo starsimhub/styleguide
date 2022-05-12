@@ -69,7 +69,7 @@ Because of this problem, we recommend the following debug / update workflow:
 
 4.	Verbose mode should provide all information that might be relevant for debugging the code. It does this by saving files (or "artifacts") that contain all relevant information in a well-formatted and interpretable file.
 
-    Part of the design structure of the test suite should be to clear out old output files during teardown. Then, if the user runs the suite without verbose on it will delete all the outdated files.
+    Part of the design structure of the test suite should be to clear out old output files during teardown.
 
 5.	As a last resort, the user should be able to use a debugger with the test, specifically the built-in python debugger package.
 6.	If a debugger is ever required to find a bug, the user must specify what information was not made available by the test's verbose mode and make an issue for a test patch. If the failing test is an integration test, the user may suggest an improvement to the error messaging that will help isolate the bug next time
