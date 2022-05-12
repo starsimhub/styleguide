@@ -26,6 +26,8 @@ In other words, the main purpose of unittests is to isolate bugs explicitly so t
 They are especially important to run in the beginning of the development process because they confirm that basic features of 
 the software meet expectations without being used in tandem with other features.
 
+
+
 At the most abstract end of this spectrum, we have integration tests which validate that the modules within the code operate together as expected. 
 They specifically target system-level issues. These tests reduce the amount of time it takes to debug the code by providing additional code coverage. 
 Although unittests might satisfy the metric of code coverage, integration tests expand coverage by probing common module combinations (such as running a sim and plotting).
@@ -39,6 +41,8 @@ Although unittests might satisfy the metric of code coverage, integration tests 
 If an issue has escaped unittests but is caught by the integration tests then it is likely a systems level issue. 
 Rather than standardized and specific output which helps isolate the error, it may be necessary to use developer tools like an IDE’s debugger to further isolate the issue. 
 Once the issue is detected, the unittests should be patched to detect this issue again if appropriate.
+
+
 
 To maintain a low runtime, in both types of test, we aim to make all tests parallelizable and computationally efficient. This should be kept in mind during code reviews. 
 It also the reason why every test suite of either type should be runnable with ``pytest``, which has a wealth of time profiling functionality.
@@ -58,20 +62,21 @@ In general:
     
     The granularity of unittests should make it easy to understand what information is relevant to finding the cause of the issue.
 
+
+
 Predicting what information is necessary to isolate a bug is not always straightforward. 
 Because of this problem, we recommend the following debug / update workflow:
 
 1.	When an individual writes an entirely new feature, they must either add a unittest or request a unittest to cover the new feature before merging.
 2.	In the case of errant code, the tests must produce error messages in GHA that should specify the nature of the test failure, what value is expected, what the actual value is, and ideally some context for the bug (such as a variable’s values leading up to the error). The error message should contain all the information required to write a bug report.
 3.	If the user can't determine the source of the bug from the error message, they can run the test locally using command line arguments to specify verbose mode
-
-``pytest test_states.py::TestStates::test_gestation -v``
-
 4.	Verbose mode should provide all information that might be relevant for debugging the code. It does this by saving files (or "artifacts") that contain all relevant information in a well-formatted and interpretable file.
 5.	As a last resort, the user should be able to use a debugger with the test, specifically the built-in python debugger package.
 6.	If a debugger is ever required to find a bug, the user must specify what information was not made available by the test's verbose mode and make an issue for a test patch. If the failing test is an integration test, the user may suggest an improvement to the error messaging that will help isolate the bug next time
 7.	If the information was included in the artifacts left behind by verbose mode but is not easily interpretable, an issue must be made to patch the tests with a better formatted artifact.
 8.	The tester (or whoever is in charge of test) must incorporate this new information (or format) into the test's verbose mode in a timely manner.
+
+
 
 
 Concrete requirements
