@@ -65,12 +65,9 @@ Because of this problem, we recommend the following debug / update workflow:
 2.	In the case of errant code, the tests must produce error messages in GHA that should specify the nature of the test failure, what value is expected, what the actual value is, and ideally some context for the bug (such as a variable’s values leading up to the error). The error message should contain all the information required to write a bug report.
 3.	If the user can't determine the source of the bug from the error message, they can run the test locally using command line arguments to specify verbose mode
 
-    ``pytest test_states.py::TestStates::test_gestation -v``
+``pytest test_states.py::TestStates::test_gestation -v``
 
 4.	Verbose mode should provide all information that might be relevant for debugging the code. It does this by saving files (or "artifacts") that contain all relevant information in a well-formatted and interpretable file.
-
-    Part of the design structure of the test suite should be to clear out old output files during teardown.
-
 5.	As a last resort, the user should be able to use a debugger with the test, specifically the built-in python debugger package.
 6.	If a debugger is ever required to find a bug, the user must specify what information was not made available by the test's verbose mode and make an issue for a test patch. If the failing test is an integration test, the user may suggest an improvement to the error messaging that will help isolate the bug next time
 7.	If the information was included in the artifacts left behind by verbose mode but is not easily interpretable, an issue must be made to patch the tests with a better formatted artifact.
