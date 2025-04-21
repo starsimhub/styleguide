@@ -2,24 +2,24 @@
 Starsim style guide 
 ===================
 
-In general, starsim models (including Covasim) follow Google's `style guide <https://google.github.io/styleguide/pyguide.html>`_. If you simply follow that, you can't go too wrong. However, there are a few "house style" differences, which are described here.
+In general, Starsim models follow Google's `style guide <https://google.github.io/styleguide/pyguide.html>`_. If you simply follow that, you can't go too wrong. However, there are a few "house style" differences, which are described here.
 
-**Note**: although the examples given here refer to Covasim and use Covasim examples, they apply to all starsim models.
+**Note**: Although the examples given here refer to Covasim and mainly use Covasim examples, they apply to all Starsim models.
 
-Covasim uses ``pylint`` to ensure style conventions. To check if your styles are compliant, run ``./tests/check_style``.
+Starsim uses ``pylint`` to ensure style conventions. To check if your styles are compliant, run ``./tests/check_style``.
 
 
 
 Design philosophy
 =================
 
-Covasim's overall design philosophy is "**Common tasks should be simple**, while uncommon tasks can't always be simple, but still should be possible".
+Starsim's overall design philosophy is "**Common tasks should be simple**, while uncommon tasks can't always be simple, but still should be possible".
 
 
 Writing for the right audience
 ------------------------------
 
-The audience for Covasim is *scientists*, not software developers. Assume that the average Covasim user dislikes coding and wants something that *just works*. Implications of this include:
+The audience for Starsim is *scientists*, not software developers. Assume that the average Starsim user dislikes coding and wants something that *just works*. Implications of this include:
 
 - Commands should be short, simple, and obvious, e.g. ``cv.Sim().run().plot()``.
 - Be as flexible as possible with user inputs. If a user could only mean one thing, do that. If the user provides ``[0, 7, 14]`` but the function needs an array instead of a list, convert the list to an array automatically (``sc.toarray()`` exists for exactly this reason).
@@ -57,7 +57,7 @@ Implications of this include:
 House style
 ===========
 
-As noted above, Covasim follows Google's style guide (GSG), **with these exceptions** (numbers refer to Google's style guide):
+As noted above, Starsim follows Google's style guide (GSG), **with these exceptions** (numbers refer to Google's style guide):
 
 
 
@@ -77,9 +77,9 @@ As noted above, Covasim follows Google's style guide (GSG), **with these excepti
 
 **Reason**: Type annotations are useful for ensuring that simple functions do exactly what they're supposed to as part of a complex whole. They prioritize consistency over convenience, which is the correct priority for low-level library functions, but not for functions and classes that aim to make it as easy as possible for the user. 
 
-For example, in Covasim, dates can be specified as numbers (``22``), strings (``'2022-02-02'``), or date objects (``datetime.date(2022, 2, 2)``), etc. Likewise, many quantities can be specified as a scalar, list, or array. If a function *usually* only needs a single input but can optionally operate on more than one, it adds burden on the user to require them to provide e.g. ``np.array([0.3])`` rather than just ``0.3``. In addition, most functions have default arguments of ``None``, in which case Covasim will use "sensible" defaults.
+For example, in Covasim, dates can be specified as numbers (``22``), strings (``'2022-02-02'``), or date objects (``datetime.date(2022, 2, 2)``), etc. Likewise, many quantities can be specified as a scalar, list, or array. If a function *usually* only needs a single input but can optionally operate on more than one, it adds burden on the user to require them to provide e.g. ``np.array([0.3])`` rather than just ``0.3``. In addition, most functions have default arguments of ``None``, in which case Starsim will use "sensible" defaults.
 
-Attempting to apply type annotations to the flexibility Covasim gives to the user would result in monstrosities like:
+Attempting to apply type annotations to the flexibility Starsim gives to the user would result in monstrosities like:
 
 .. code-block:: python
 
@@ -118,7 +118,7 @@ Note that you *can* (and should) use type annotations in your docstrings. For ex
 
 **Reason**: Line lengths of 80 characters are due to `historical limitations <https://en.wikipedia.org/wiki/Characters_per_line>`_. Think of lines >80 characters as bad, but breaking a line as being equally bad. Decide whether a long line would be better implemented some other way -- for example, rather than breaking a >80 character list comprehension over multiple lines, use a ``for`` loop instead. Always keep literal strings together (do not use implicit string concatenation).
 
-Line comments are encouraged in Covasim, and these can be as long as needed; they should not be broken over multiple lines to avoid breaking the flow of the code. A 50-character line with a 150 character line comment after it is completely fine. The rationale is that long line comments only need to be read very occasionally; if they are broken up over multiple lines, then they have to be scrolled past *every single time*. Since scrolling vertically is such a common task, it is important to minimize the amount of effort required (i.e., minimizing lines) while not sacrificing clarity. Vertically compact code also means more will fit on your screen (and thence your brain).
+Line comments are encouraged in Starsim, and these can be as long as needed; they should not be broken over multiple lines to avoid breaking the flow of the code. A 50-character line with a 150 character line comment after it is completely fine. The rationale is that long line comments only need to be read very occasionally; if they are broken up over multiple lines, then they have to be scrolled past *every single time*. Since scrolling vertically is such a common task, it is important to minimize the amount of effort required (i.e., minimizing lines) while not sacrificing clarity. Vertically compact code also means more will fit on your screen (and thence your brain).
 
 Examples:
 
@@ -153,7 +153,7 @@ Examples:
 
 **Reason**: Google's recommendation (two blank lines between functions or classes, one blank line between methods) is appropriate for small-to-medium classes and methods. However, for large methods (e.g. >50 lines) with multiple blank lines within them, using only a single blank line can make it hard to tell where one method stops and the next one starts. Thus, for a method that contains blank lines within itself, use *two* blank lines between methods (and then do that consistently for the rest of the class). For separating large classes/functions (>500 lines), or classes whose methods are separated by two blank lines, separating them by three blank lines is preferable.
 
-While not explicitly covered by the Google style guide, ``return`` statements should be used at the end of each function and method, even if that block returns ``None`` (in which case use ``return``, not ``return None``). This helps delimit larger methods/functions. However, always ask whether a function/method *should* return ``None``. Following the pandas convention, many Covasim methods return ``self``, which is what enables "chaining" patterns such as ``cv.Sim().run().plot()``.
+While not explicitly covered by the Google style guide, ``return`` statements should be used at the end of each function and method, even if that block returns ``None`` (in which case use ``return``, not ``return None``). This helps delimit larger methods/functions. However, always ask whether a function/method *should* return ``None``. Following the pandas convention, many Starsim methods return ``self``, which is what enables "chaining" patterns such as ``cv.Sim().run().plot()``.
 
 
 
@@ -232,7 +232,7 @@ Vertically aligned code blocks also make it easier to edit code using editors th
 
 **Difference**: Imports should be ordered logically rather than alphabetically.
 
-**Reason**: Covasim modules shouldn't need a long list of imports. Sort imports as in Google's style guide (from most-generic to most-specific libraries), but second-order sorting should also be done logically, rather than alphabetically. For example:
+**Reason**: Starsim modules shouldn't need a long list of imports. Sort imports as in Google's style guide (from most-generic to most-specific libraries), but second-order sorting should also be done logically, rather than alphabetically. For example:
 
 .. code-block:: python
 
@@ -320,7 +320,7 @@ Note also the use of ``import pylab as pl`` instead of the more common ``import 
 
 **Difference**: Names should be consistent with other libraries and with how the user interacts with the code.
 
-**Reason**: Covasim interacts with other libraries, especially Numpy and Matplotlib, and should not redefine these libraries' names. For example, Google naming convention would prefer ``fig_size`` to ``figsize``, but Matplotlib uses ``figsize``, so this should also be the name preferred by Covasim. (This applies if the variable name is *only* used by source libraries. If it's used by both, e.g. ``start_day`` used both directly by Covasim and by ``sc.date()``, it's OK to use the Google style convention.)
+**Reason**: Starsim interacts with other libraries, especially Numpy and Matplotlib, and should not redefine these libraries' names. For example, Google naming convention would prefer ``fig_size`` to ``figsize``, but Matplotlib uses ``figsize``, so this should also be the name preferred by Starsim. (This applies if the variable name is *only* used by source libraries. If it's used by both, e.g. ``start_day`` used both directly by Covasim and by ``sc.date()``, it's OK to use the Google style convention.)
 
 If an object is technically a class but is used more like a function (e.g. ``cv.change_beta()``), it should be named as if it were a function. A class is "used like a function" if the user is not expected to interact with it after creation, as is the case with most interventions. Thus ``cv.BaseVaccinate`` is a class that is intended to be used *as a class* (primarily for subclassing). ``cv.vaccinate_prob()`` is also a class, but intended to be used like a function; ``cv.vaccinate()`` is a function which returns an instance of ``cv.vaccinate_prob`` or ``cv.vaccinate_num``. Because ``cv.vaccinate()`` and ``cv.vaccinate_prob()`` can be used interchangeably, they are named according to the same convention.
 
