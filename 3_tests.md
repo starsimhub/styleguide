@@ -1,8 +1,37 @@
 # Starsim testing style guide
 
-It's very dull to write a test for a completed feature that you know will pass. So use test-driven development (TDD) instead: before you write the feature, start with the test and use it to brainstorm the feature's API. Then you can trick yourself that you're doing cool design architecture instead of writing a boring test. We're not militant about using TDD, but it really, truly is a good idea. 
+It's very dull to write a test for a completed feature that you know will pass. So use test-driven development (TDD) instead: before you write the feature, start with the test and use it to brainstorm the feature's API. Then you can trick yourself that you're doing cool design architecture instead of writing a boring test. We're not militant about using TDD, but it really, truly is a good idea.
 
-Starsim uses `pytest` for its test suite, run in parallel via `pytest-xdist`. (Do not use `unittest`.) Tests live in the `tests/` folder and follow a consistent set of conventions described below. The overriding principle is: **tests should be runnable both by pytest and as standalone scripts**, so that developers can interactively explore and debug results. All tests should be run on GitHub Actions for every pull request, and PRs should only be merged if all tests pass.
+Starsim uses `pytest` for its test suite, run in parallel via `pytest-xdist`. (Do not use `unittest` -- we have not found it to be particularly useful!) Tests live in the `tests/` folder and follow a consistent set of conventions described below. The overriding principle is: **tests should be runnable both by pytest and as standalone scripts**, so that developers can interactively explore and debug results. All tests should be run on GitHub Actions for every pull request, and PRs should only be merged if all tests pass.
+
+
+## Philosophy
+
+Before getting into the mechanics, here are the core principles that should guide how you write tests for Starsim projects.
+
+### Tests are examples
+
+A test is often the first piece of working code that a new contributor (or user) will read. Write your tests as if they are **examples of how to interact with the models**. They should expose preferred pathways and APIs -- someone reading `test_sir()` should come away understanding the recommended way to set up and run an SIR simulation.
+
+### Write for multiple audiences
+
+Our models have multiple user personas: epidemiologists who want to run a quick scenario, developers building new disease modules, researchers calibrating to data. Ideally, the tests you write will clearly lay out the best path for each user type. There *will* be multiple ways of doing things -- this is the Pythonic way, and it's the Starsim philosophy -- but there will generally be one **best** way for each particular use case. Expose this.
+
+### Tests, not analyses
+
+Sometimes a test can spin out into a full-blown analysis. If you want to test the end-to-end workflow of running an entire health-budget resource optimization for a country -- loading multiple data files, configuring models, post-processing outputs -- that belongs in a **separate analysis repo**. The tests in the main repo should be **minimal reproducible examples**: the smallest amount of code that exercises the feature and confirms it works.
+
+### Modular and minimal
+
+Each test should do one thing and do it clearly. If a test function is growing beyond ~30 lines, ask whether it's really testing one thing or several. Break it up. Keep setup code in helper functions so the test body itself reads like a recipe.
+
+### Scientific correctness over mechanical coverage
+
+It is always more relevant to focus on testing the **scientific validity of the outputs** than to write thousands of lines of tests that do things like change a dict entry and then assert the dict entry changed. Good tests confirm that the model *behaves as expected epidemiologically*: higher beta means higher prevalence; a vaccine reduces infections; treatment shortens duration of infection. These are the tests that catch real bugs.
+
+### Keep it simple
+
+Typically it is more than sufficient to run a test, assert something meaningful, and then either raise an error or print a success statement. If in doubt, less is better than more!
 
 
 ## File structure
@@ -56,6 +85,7 @@ if __name__ == '__main__':
 ```
 
 An example of a complete test:
+
 ```python
 @sc.timer()
 def test_simple_vax(do_plot=do_plot):
@@ -110,14 +140,34 @@ Use the smallest agent count that still produces meaningful test results. Integr
 
 ### Naming
 
-Name test functions `test_<feature>`, where `<feature>` describes what is being tested:
+Name test functions `test_<feature>`, where `<feature>` is **lowercase** and **succinct**:
 
 ```python
-def test_sir():         # Yes
-def test_parallel():    # Yes
-def test_api():         # No: not descriptive
-def test_sir_model():   # No: "model" adds nothing
+def test_sir():         # Yes: short, clear
+def test_immunity():    # Yes: names the concept being tested
+def test_parallel():    # Yes: describes the capability
+def test_sir_epi():     # Yes: a refinement within a file that has multiple SIR tests
+
+def TestImmunityDynamicsWanesOverTime():  # No: not a test name, it's a novel title
+def test_sir_model():                     # No: "model" adds nothing
+def test_api():                           # No: too vague on its own
 ```
+
+### Grouping
+
+Group tests into files by topic. A test of SIR model dynamics goes in `test_diseases.py`; a test of network formation goes in `test_networks.py`; a test of calibration goes in `test_calibration.py`. Follow the naming convention `test_<topic>.py` for files:
+
+```
+tests/
+    test_sim.py          # Core sim creation and running
+    test_diseases.py     # Disease module dynamics
+    test_networks.py     # Network formation and connectivity
+    test_demographics.py # Birth, death, migration
+    test_interventions.py # Vaccines, treatments, etc.
+    test_calibration.py  # Calibration workflows
+```
+
+If a test is more of an exploratory dev test or a detailed investigation, it belongs in a `devtests/` subfolder rather than the main `tests/` directory. The main test suite should be the set of tests that run in CI and that every contributor is expected to keep passing.
 
 ### Decorators
 
@@ -157,10 +207,11 @@ assert np.allclose(s1.summary[:], s2.summary[:], rtol=0, atol=0, equal_nan=True)
 ```
 
 For testing expected exceptions, use `pytest.raises`:
+
 ```python
 with pytest.raises(TypeError):
-    sim = ss.Sim(diseases=True)
-    sim.init()
+    sim = ss.Sim(diseases=True) # invalid type for diseases
+    sim.init() # caught here
 ```
 
 ### Testing scientific correctness
@@ -186,18 +237,37 @@ Use generous tolerances (`rtol=0.05` or more) for stochastic comparisons to avoi
 rtol = 0.2  # Generous to avoid random failures with small populations
 ```
 
+## Test coverage
 
-## Dual-mode execution
+Test coverage should be checked periodically (e.g., after a major release), typically by a `check_coverage` script. We don't aim for 100% test coverage, but anything below 80% starts to get concerning. If a block of code is hard to cover in tests, ask yourself: do we really need to keep it?
 
-The most distinctive Starsim testing convention is that every test file is designed to run *both* as a pytest module and as a standalone script.
+
+## What NOT to test
+
+Having more tests is not always better: they can be confusing, create technical debt, and slow down development. Here is guidance on what to avoid:
+
+- **Mechanical getter/setter tests**: Don't write tests that just set a parameter and assert it was set. If `sim.pars.beta = 0.5` followed by `assert sim.pars.beta == 0.5` is your test, it's testing Python, not your model.
+- **Exhaustive input permutations**: Don't test every possible combination of inputs. Test the important ones -- defaults, edge cases, and the cases your users will actually hit.
+- **End-to-end country analyses**: If a test requires loading country-specific data files, configuring multiple diseases, running calibration, and post-processing results, it's an analysis, not a test. Move it to a separate repo.
+- **Tests that require explanation**: If you need a paragraph of comments to explain what a test is doing, the test is too complex. Simplify it.
+
+
+## Triple-mode execution
+
+The most distinctive Starsim testing convention is that every test file is designed to run as a GitHub action, as a pytest module, *and* as a standalone script.
+
+### GitHub Actions mode
+
+Always include a `.github/workflows/tests.yaml` file that runs the tests. The tests run on GitHub Actions should exactly match what's run locally by pytest.
 
 ### pytest mode
 
-When run via pytest (`pytest test_*.py -n auto`), tests execute with `do_plot=False` and `sc.options(interactive=False)`. Functions are discovered by name (`test_*`). Plots are suppressed.
+When run via pytest (`pytest test_*.py -n auto`), tests execute with `do_plot=False` and `sc.options(interactive=False)`. Functions are discovered by name (`test_*`). Plots are suppressed. For more complex projects, write a `run_tests` script to automatically run the tests in parallel (otherwise, just calling `pytest` is fine).
 
 ### Script mode
 
-When run directly (`python test_sim.py`), the `__main__` block sets `do_plot=True`, runs all tests, and shows plots.
+When run directly (`python test_sim.py`), the `__main__` block sets `do_plot=True`, runs all tests, and shows plots. This is important for catching things that might pass the assert statements, but look scientifically wrong.
+
 
 ## Plotting in tests
 
@@ -221,15 +291,15 @@ The `SCIRIS_BACKEND=agg` environment variable is set in the test runner scripts 
 
 ### Running tests
 
-- **`./tests/run_tests`** -- runs all `test_*.py` files in parallel with timing.
-- **`./tests/check_coverage`** -- runs tests with coverage reporting and generates an HTML report.
-- **`./tests/check_style`** -- runs `pylint` on the main `starsim` package.
+- **`tests/run_tests`** -- runs all `test_*.py` files in parallel with timing.
+- **`tests/check_coverage`** -- runs tests with coverage reporting and generates an HTML report.
+- **`tests/check_style`** -- runs `pylint` on the main `starsim` package.
 
 ### Configuration files
 
-- **`pytest.ini`** -- configures pytest warnings and environment variables (e.g. `SCIRIS_BACKEND=agg`).
-- **`.coveragerc`** -- configures coverage.py to measure branch coverage of the `starsim` package, excluding pragmas, defensive raises, and `__main__` blocks.
-- **`.gitignore`** -- excludes the `temp/` directory used for test artifacts.
+- **`tests/pytest.ini`** -- typically required; silences unnecessary pytest warnings.
+- **`tests/.coveragerc`** -- optional; used to fine-tune coverage reports.
+. **`./.pylintrc`** -- implements the [Starsim Python style guide](2_python.md) to silence unnecessary linting warnings.
 
 
 ## Parting words
@@ -237,6 +307,8 @@ The `SCIRIS_BACKEND=agg` environment variable is set in the test runner scripts 
 Good tests should:
 
 - **Be scientific**: test that the model behaves as epidemiologically expected, not just that code runs without errors.
+- **Be examples**: a new user reading your test should learn the recommended way to use the API.
 - **Be debuggable**: return objects, support plotting, and print informative output so failures can be investigated interactively.
 - **Be stable**: use tolerances appropriate for stochastic models; a test that fails 1% of the time due to randomness is worse than no test.
 - **Be fast**: use the smallest agent count that produces meaningful results; save large-scale tests for benchmarks.
+- **Be minimal**: test one thing per function; keep the main test suite lean and move exploratory work to `devtests/`.
