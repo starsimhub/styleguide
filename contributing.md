@@ -4,7 +4,7 @@ Welcome! We are thrilled you are interested in contributing to Starsim.
 This document will help you get started.
 
 Please see the guidelines below to provide feedback or contribute to Starsim
-code.  Note that we make no representations that the code works as intended or
+code. Note that we make no representations that the code works as intended or
 that we will provide support, address issues that are found, or accept pull
 requests.
 
@@ -81,10 +81,10 @@ that meet the following criteria are more likely to be merged:
 - Up-to-date with master with no merge conflicts
 - Self-contained
 - Fix a demonstrable limitation of bug
-- Follow the current code style
+- Follow the current code style (described in this repo)
 - If the PR introduces a new feature, it has complete [Google style docstrings](https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html) and comments,
   and a test demonstrating its functionality
 - Otherwise, sample code demonstrating old and new behavior (this can be in the PR comment on
   GitHub, not necessarily committed in the repo)
 
-If you have additional questions or comments, contact info@covasim.org.
+If you have additional questions or comments, contact info@starsim.org.
