@@ -1,6 +1,9 @@
 # Starsim testing style guide
 
-Starsim uses `pytest` for its test suite, run in parallel via `pytest-xdist`. Tests live in the `tests/` folder and follow a consistent set of conventions described below. The overriding principle is: **tests should be runnable both by pytest and as standalone scripts**, so that developers can interactively explore and debug results.
+It's very dull to write a test for a completed feature that you know will pass. So use test-driven development (TDD) instead: before you write the feature, start with the test and use it to brainstorm the feature's API. Then you can trick yourself that you're doing cool design architecture instead of writing a boring test. We're not militant about using TDD, but it really, truly is a good idea. 
+
+Starsim uses `pytest` for its test suite, run in parallel via `pytest-xdist`. (Do not use `unittest`.) Tests live in the `tests/` folder and follow a consistent set of conventions described below. The overriding principle is: **tests should be runnable both by pytest and as standalone scripts**, so that developers can interactively explore and debug results. All tests should be run on GitHub Actions for every pull request, and PRs should only be merged if all tests pass.
+
 
 ## File structure
 
