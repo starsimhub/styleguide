@@ -30,7 +30,7 @@ Your code is part of your research, not distinct from it.
 
 Good code doesn't mean good research, but bad code can mean bad research.
 
-If you write code, that makes you a developer, whether you like it or not.
+If you write code, that makes you an engineer, whether you like it or not.
 
 ## Credo for Software
 
