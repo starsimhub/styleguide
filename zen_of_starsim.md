@@ -1,5 +1,4 @@
-Zen of Starsim†
-===============
+# Zen of Starsim†
 
 The more common a task is, the easier it should be to do.
 
@@ -25,9 +24,7 @@ Write your code as if it will be seen by others, and then actually share it with
 
 Ask of your code: does it bring joy? Clarity? Utility? And for whom?
 
-
-Credo for Research
-------------------
+## Credo for Research
 
 Your code is part of your research, not distinct from it.
 
@@ -35,9 +32,7 @@ Good code doesn't mean good research, but bad code can mean bad research.
 
 If you write code, that makes you a developer, whether you like it or not.
 
-
-Credo for Software
-------------------
+## Credo for Software
 
 Write code that embraces change: change is not rejection, it is improvement.
 
@@ -49,9 +44,10 @@ Sometimes a day spent coding can save five minutes asking a researcher what they
 
 Ask yourself: will your code ultimately help save lives? If not, does it have purpose?
 
+---
 
-† Inspired by the Zen of Python:  https://www.python.org/dev/peps/pep-0020/
+† Inspired by the Zen of Python: https://www.python.org/dev/peps/pep-0020/
 
-‡ https://en.wikiquote.org/wiki/Frank_Westheimer 
- 
+‡ https://en.wikiquote.org/wiki/Frank_Westheimer
+
 Contributors: Ace Thompson, Charles Eliot, Cliff Kerr, Dan Klein, Dina Mistry, Edward Wenger, Mary Fisher
