@@ -31,7 +31,7 @@ It is always more relevant to focus on testing the **scientific validity of the 
 
 ### Keep it simple
 
-Typically it is more than sufficient to run a test, assert something meaningful, and then either raise an error or print a success statement. We use pytest, but even that isn't always necessary -- a plain script with `assert` statements and an `if __name__ == '__main__'` block is perfectly valid.
+Typically it is more than sufficient to run a test, assert something meaningful, and then either raise an error or print a success statement. If in doubt, less is better than more!
 
 
 ## File structure
@@ -210,8 +210,8 @@ For testing expected exceptions, use `pytest.raises`:
 
 ```python
 with pytest.raises(TypeError):
-    sim = ss.Sim(diseases=True)
-    sim.init()
+    sim = ss.Sim(diseases=True) # invalid type for diseases
+    sim.init() # caught here
 ```
 
 ### Testing scientific correctness
@@ -237,10 +237,14 @@ Use generous tolerances (`rtol=0.05` or more) for stochastic comparisons to avoi
 rtol = 0.2  # Generous to avoid random failures with small populations
 ```
 
+## Test coverage
+
+Test coverage should be checked periodically (e.g., after a major release), typically by a `check_coverage` script. We don't aim for 100% test coverage, but anything below 80% starts to get concerning. If a block of code is hard to cover in tests, ask yourself: do we really need to keep it?
+
 
 ## What NOT to test
 
-Not all tests are created equal. Here is guidance on what to avoid:
+Having more tests is not always better: they can be confusing, create technical debt, and slow down development. Here is guidance on what to avoid:
 
 - **Mechanical getter/setter tests**: Don't write tests that just set a parameter and assert it was set. If `sim.pars.beta = 0.5` followed by `assert sim.pars.beta == 0.5` is your test, it's testing Python, not your model.
 - **Exhaustive input permutations**: Don't test every possible combination of inputs. Test the important ones -- defaults, edge cases, and the cases your users will actually hit.
@@ -248,17 +252,22 @@ Not all tests are created equal. Here is guidance on what to avoid:
 - **Tests that require explanation**: If you need a paragraph of comments to explain what a test is doing, the test is too complex. Simplify it.
 
 
-## Dual-mode execution
+## Triple-mode execution
 
-The most distinctive Starsim testing convention is that every test file is designed to run *both* as a pytest module and as a standalone script.
+The most distinctive Starsim testing convention is that every test file is designed to run as a GitHub action, as a pytest module, *and* as a standalone script.
+
+### GitHub Actions mode
+
+Always include a `.github/workflows/tests.yaml` file that runs the tests. The tests run on GitHub Actions should exactly match what's run locally by pytest.
 
 ### pytest mode
 
-When run via pytest (`pytest test_*.py -n auto`), tests execute with `do_plot=False` and `sc.options(interactive=False)`. Functions are discovered by name (`test_*`). Plots are suppressed.
+When run via pytest (`pytest test_*.py -n auto`), tests execute with `do_plot=False` and `sc.options(interactive=False)`. Functions are discovered by name (`test_*`). Plots are suppressed. For more complex projects, write a `run_tests` script to automatically run the tests in parallel (otherwise, just calling `pytest` is fine).
 
 ### Script mode
 
-When run directly (`python test_sim.py`), the `__main__` block sets `do_plot=True`, runs all tests, and shows plots.
+When run directly (`python test_sim.py`), the `__main__` block sets `do_plot=True`, runs all tests, and shows plots. This is important for catching things that might pass the assert statements, but look scientifically wrong.
+
 
 ## Plotting in tests
 
@@ -282,15 +291,15 @@ The `SCIRIS_BACKEND=agg` environment variable is set in the test runner scripts 
 
 ### Running tests
 
-- **`./tests/run_tests`** -- runs all `test_*.py` files in parallel with timing.
-- **`./tests/check_coverage`** -- runs tests with coverage reporting and generates an HTML report.
-- **`./tests/check_style`** -- runs `pylint` on the main `starsim` package.
+- **`tests/run_tests`** -- runs all `test_*.py` files in parallel with timing.
+- **`tests/check_coverage`** -- runs tests with coverage reporting and generates an HTML report.
+- **`tests/check_style`** -- runs `pylint` on the main `starsim` package.
 
 ### Configuration files
 
-- **`pytest.ini`** -- configures pytest warnings and environment variables (e.g. `SCIRIS_BACKEND=agg`).
-- **`.coveragerc`** -- configures coverage.py to measure branch coverage of the `starsim` package, excluding pragmas, defensive raises, and `__main__` blocks.
-- **`.gitignore`** -- excludes the `temp/` directory used for test artifacts.
+- **`tests/pytest.ini`** -- typically required; silences unnecessary pytest warnings.
+- **`tests/.coveragerc`** -- optional; used to fine-tune coverage reports.
+. **`./.pylintrc`** -- implements the [Starsim Python style guide](2_python.md) to silence unnecessary linting warnings.
 
 
 ## Parting words
