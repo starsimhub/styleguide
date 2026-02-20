@@ -8,3 +8,5 @@ This repository contains style and community guidelines for Starsim projects. Th
 - [4_documentation.md](4_documentation.md) — Documentation: readmes, auto-generated API reference, and tutorials.
 - [5_other.md](5_other.md) — Other principles: for example, be very careful not include sensitive data in repos.
 - [6_zen.md](6_zen.md) — Zen of Starsim: short principles and credos for research and software (simplicity, docs, tests, change).
+
+*Version: 2.0 | Last updated: 2026-02-19*
