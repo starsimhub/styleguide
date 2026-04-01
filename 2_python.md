@@ -54,6 +54,8 @@ def count_days(self, start_day, end_day):
     return self.day(end_day) - self.day(start_day)
 ```
 
+See the "Naming" section below for another example of why type hints are not usually used.
+
 ### 3.2 Line length ([GSG32](https://google.github.io/styleguide/pyguide.html#32-line-length))
 
 **Difference**: Long lines are not *great*, but are justified in some circumstances.
@@ -262,6 +264,49 @@ vp = 0.3
 ```
 
 Underscores in variable names are generally preferred, but there are exceptions (e.g. `figsize` mentioned above). Always ask whether part of a multi-part name is providing necessary clarity (and if it's not, omit it). For example, if an intervention called `antigen_test()` uses a single variable for probability, call that variable `prob` rather than `test_prob`.
+
+Why is it important to keep variable names short? Because it makes the code closer to math, which is how most Starsim users think. Consider these two examples that both implement the same functionality:
+
+```python
+#%% Version 1 -- short, meaningful names
+import numpy as np
+
+def test_and_treat(uids, dx_prob=0.7, tx_prob=0.8, tx_eff=0.9):
+    n = len(uids) # Number of agents
+    rel_eff = np.zeros(n) # Relative efficacy (output)
+    treated = (dx_prob > np.random.rand(n)) & (tx_prob > np.random.rand(n)) # Find who's treated
+    rel_eff[treated] = tx_eff # Calculate per-agent treatment efficacy
+    return rel_eff
+
+
+#%% Version 2 -- long, very descriptive names -- find the three bugs!
+import numpy as np
+import numpy.typing as npt
+import typing
+
+def combined_testing_and_treatment_intervention(
+        unique_agent_ids: typing.List[int] | npt.NDArray[np.int_],
+        probability_of_diagnosis: float = 0.7,
+        probability_of_treatment_following_diagnosis: float = 0.8,
+        clinical_efficacy_of_treatment: float = 0.9
+    )  -> npt.NDArray[np.int_]:
+    number_of_agents = len(uids)
+    per_agent_relative_efficacy_of_treatment = np.zeros(number_of_agents)
+    agents_receiving treatment = \
+        (probability_of_diagnosis > np.random.rand(number_of_agents)) & \
+            (probability_of_treatment_following_diagnosis < \
+             np.random.rand(number_of_agents))
+    per_agent_relative_efficacy_of_treatment[agents_receiving_treatment] = clinical_efficacy_of_treatment
+    return per_agent_relative_efficacy_of_treatment
+
+
+#%% Test
+uids = [1, 3, 5, 25, 58, 60, 78, 83, 92]
+print(test_and_treat(uids))
+print(combined_testing_and_treatment_intervention(uids))
+```
+
+Even for this quite simple example, the second one gets quite gnarly.
 
 ### Parting words
 
