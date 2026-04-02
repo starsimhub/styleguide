@@ -27,7 +27,7 @@ website:
 
   navbar:
     logo: /assets/starsim-logo.png
-    title: false
+    title: Starsim Style Guide
     collapse-below: lg
 
     tools:
@@ -38,7 +38,8 @@ website:
       - icon: globe
         href: https://starsim.org
 
-    left:
+  sidebar:
+    contents:
       - href: index.qmd
         text: Home
       - href: 1_philosophy.md
