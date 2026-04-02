@@ -9,4 +9,6 @@ This repository contains style and community guidelines for Starsim projects. Th
 - [5_other.md](5_other.md) — Other principles: for example, be very careful not include sensitive data in repos.
 - [6_zen.md](6_zen.md) — Zen of Starsim: short principles and credos for research and software (simplicity, docs, tests, change).
 
+Note: although not part of the style guide, the [IDM software engineering quality guidelines](engineering_quality_guidelines.md) are also included for completeness.
+
 *Version: 2.1 | Last updated: 2026-04-01*
