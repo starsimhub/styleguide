@@ -27,7 +27,12 @@ p:has(+ ul) {
   width: 100%;
 }
 
-.navbar-title {
+.navbar-brand-container {
+  flex: 1;
+}
+
+.navbar-brand-container .navbar-brand:not(.navbar-brand-logo) {
+  flex: 1;
   text-align: center;
 }
 
