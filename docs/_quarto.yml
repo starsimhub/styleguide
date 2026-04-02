@@ -15,7 +15,7 @@ website:
     type: overlay
 
   page-footer:
-    center: "© 2026 Starsim Development Team / Gates Foundation. All rights reserved. [Privacy and Cookies Notice](https://www.gatesfoundation.org/Privacy-and-Cookies-Notice) | [Terms of Use](https://www.gatesfoundation.org/Terms-of-Use)"
+    center: "© 2026 Starsim Development Team / Gates Foundation. All rights reserved.<br>[Privacy and Cookies Notice](https://www.gatesfoundation.org/Privacy-and-Cookies-Notice) | [Terms of Use](https://www.gatesfoundation.org/Terms-of-Use)"
     right:
       - icon: github
         href: https://github.com/starsimhub/styleguide
