@@ -11,4 +11,4 @@ This repository contains style and community guidelines for Starsim projects. Th
 
 Note: although not part of the style guide, the [IDM software engineering quality guidelines](engineering_quality_guidelines.md) are also included here for completeness. The style guide and the engineering quality guidelines together give a (pretty) complete picture of what good Starsim code looks like.
 
-*Version: 2.1 | Last updated: 2026-04-01*
+*Version: 2.1 | Last updated: 2026-04-02*

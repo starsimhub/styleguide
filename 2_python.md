@@ -315,13 +315,13 @@ This section covers additional topics not covered in the Google style guide.
 
 ### Managing Python dependencies
 
-#### `pip` vs `conda` vs `uv`
+#### Package managers
 
 We do not take a position on which Python package/environment manager you use. However:
 
 - Your package should be installable with both `pip` and `uv`, if possible.
 - You do not need to use an environment manager; however, if you do use one, we recommend `conda` or `uv`, not `venv`.
-- In general, straightforward projects with simple dependencies should use `pip`, but more complex projects (e.g. AI workflows), or projects that need exact reproducibility on different environments (e.g., running across VMs), should use `uv`. 
+- In general, straightforward projects with simple dependencies should use `pip`, but more complex projects (e.g. AI workflows), or projects that need exact reproducibility on different environments (e.g., running across VMs), should use `uv`. Include a `uv.lock` file if it's helpful, but do not include one "just because".
 
 #### Dependency pinning
 
