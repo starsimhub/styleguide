@@ -1,10 +1,35 @@
-# Starsim Python style guide
+# Python style guide
 
 In general, Starsim models follow Google's [style guide](https://google.github.io/styleguide/pyguide.html). If you simply follow that, you can't go too wrong. However, there are a few "house style" differences, which are described here.
 
 **Note**: Although the examples given here refer to Covasim and mainly use Covasim examples, they apply to all Starsim models.
 
 Starsim uses `pylint` to ensure style conventions. To check if your styles are compliant, run `./tests/check_style`.
+
+
+## Google style guide summary
+
+While we encourage you to read the whole Google style guide, here's the quick version (skipping points that are covered in more detail below):
+
+- Avoid global state variables.
+- Nested functions, list comprehensions, and lambda functions are fine, but use them sparingly.
+- List comprehensions are also fine, but also use sparingly.
+- Use implicit true/false where possible (e.g. `if n_tests` not `if n_tests > 0`); but always check for `None` explicitly (e.g. `if n_tests is None: n_tests = 0`, not `if not n_tests: n_tests = 0`).
+- Use parentheses sparingly.
+- Indent using 4 spaces.
+- Do not use unnecessary whitespace.
+- Docstrings:
+  - Use module-level docstrings (a `"""` block at the very top of each Python file) that describes what this file does; it should not be more than a paragraph or two.
+  - There should be a docstring for each function, class, and method (we'll just refer to these as "functions" for simplicity)
+  - Short, obvious, and/or utility functions, e.g. `__len__` almost never needs a docstring; Google's exact advice is "Use docstrings for every function that is part of the public API, has nontrivial size, or non-obvious logic".
+  - Docstrings should start with a one-line explanation of what the function does. Then, if needed, a longer explanation.
+  - If the function takes arguments, these should be listed under "Args:", including types and defaults.
+  - If the function outputs something important, you can optionally include a "Returns:" section.
+  - If the function is an important user API, include at least one example under "**Examples**:".
+- Do not use getters and setters unless necessary (if you don't know what this means, you're probably safe!).
+- Prefer small and focused functions.
+- Be consistent!
+
 
 ## House style
 
@@ -15,6 +40,37 @@ As noted above, Starsim follows Google's style guide (GSG), **with these excepti
 **Difference**: It's fine to use `for key in obj.keys(): ...` instead of `for key in obj: ...`.
 
 **Reason**: In larger functions with complex data types, it's not immediately obvious what type an object is. While `for key in obj: ...` is fine, especially if it's clear that `obj` is a dict, `for key in obj.keys(): ...` is also acceptable if it improves clarity.
+
+### 2.12 Default Argument Values ([GSG212](https://google.github.io/styleguide/pyguide.html#212-default-argument-values))
+
+**Difference**: Use keyword arguments with default values wherever possible.
+
+**Reason**: The perfect function is one that does exactly what you want with no customization. For example, Matplotlib's `plt.figure()` opens up a figure. There are lots of things you could be asked to specify -- the background color, the backend to use, the figure size, etc -- but it just guesses these things (and most of the time, it's guesses are right or close enough). Keyword arguments with default values provide the most robust and user-friendly API, especially when a function has more than a couple arguments. Even with a small number of arguments, keyword arguments prevent silly mistakes like:
+
+```python
+def apply_interventions(self, screen_prob=0.0, treat_prob=0.0, vax_prob=0.0):
+    self.apply_screening(screen_prob)
+    self.apply_treatment(treat_prob)
+    self.apply_vaccination(vax_prob)
+```
+
+In downstream code, if you see this:
+
+```python
+sim.apply_interventions(0.6, 0.4, 0.0)
+```
+
+that doesn't tell you much, and it's obviously extremely easy to misremember the order of the values (vaccination should be first, right?). Contrast that with:
+
+```python
+sim.apply_interventions(screen_prob=0.6, treat_prob=0.4)
+```
+
+### 2.20 Modern Python: from `__future__` imports ([GSG220](https://google.github.io/styleguide/pyguide.html#220-modern-python-from-__future__-imports))
+
+**Difference**: Never use.
+
+**Reason**: Nothing has been added to `__future__` since Python 3.7 (in 2018). We simply don't support Python versions that old.
 
 ### 2.21 Type Annotated Code ([GSG221](https://google.github.io/styleguide/pyguide.html#221-type-annotated-code))
 
@@ -59,7 +115,6 @@ See the "Naming" section below for another example of why type hints are not usu
 #### Exceptions
 
 If you're writing code like `count_days`, or standard Starsim modules (e.g. interventions), you shouldn't need type hints. However, there are many cases where type hints are very useful. If you are passing large numbers of simple objects between functions, type annotations tend not to help much (as in the examples above). However, if you're passing a small number of complex objects between functions, they can be very helpful, especially for code introspection. For example, if you're working with AI agents and you're passing in a `RequestContext` and expecting a `ResultMessage` back, type hints can be very helpful in specifying that the API must be _exactly_ this.
-
 
 ### 3.2 Line length ([GSG32](https://google.github.io/styleguide/pyguide.html#32-line-length))
 
