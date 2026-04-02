@@ -308,7 +308,36 @@ print(combined_testing_and_treatment_intervention(uids))
 
 Even for this quite simple example, the second one gets quite gnarly.
 
-### Parting words
+
+## Other conventions
+
+This section covers additional topics not covered in the Google style guide.
+
+### Managing Python dependencies
+
+#### `pip` vs `conda` vs `uv`
+
+We do not take a position on which Python package/environment manager you use. However:
+
+- Your package should be installable with both `pip` and `uv`, if possible.
+- You do not need to use an environment manager; however, if you do use one, we recommend `conda` or `uv`, not `venv`.
+- In general, straightforward projects with simple dependencies should use `pip`, but more complex projects (e.g. AI workflows), or projects that need exact reproducibility on different environments (e.g., running across VMs), should use `uv`. 
+
+#### Dependency pinning
+
+Pinning dependencies (e.g. `numpy==1.23.0`) allows for exact reproducibility in the future. However, it also makes your code extremely brittle (if a single dependency of yours pins a shared dependency to a different version, there is a conflict).
+
+Where possible, provide exact dependency _guidance_, not _requirements_. The dependencies in `pyproject.toml` should be as general as possible (e.g. `numpy`), with upward-pinned dependencies if and only if older versions really are guaranteed not to work (e.g. `pandas>=2.0.0`).
+
+If you are building reusable library code where the functionality rather than the results matters (e.g., Starsim itself), this is usually enough. However, if your code produces numerical results where reproducibility matters (e.g., results for a publication), you _should_  provide pinned dependencies. In addition to the unpinned `pyproject.toml`, you have three options, from least to most strict:
+
+- In `pyproject.toml`, under `[project.optional-dependencies]`, add a `lock` section with pinned dependencies based on the latest-tested version.
+- You can export all the packages in your current environment with `pip freeze > requirements_locked.txt` (always include a suffix like "locked" or "frozen" to make it clear to users that these are not _necessary_ requirements).
+- If you're using `conda`, you can export your current environment, e.g. `conda export > environment.yaml`.
+- If you're using `uv`, you can use `uv lock --upgrade`.
+
+
+## Parting words
 
 If in doubt, ask! Slack, Teams, email, GitHub -- all work. And don't worry about getting it perfect; any issues with style should be corrected during code review and merge.
 
