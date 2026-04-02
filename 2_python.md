@@ -18,17 +18,17 @@ As noted above, Starsim follows Google's style guide (GSG), **with these excepti
 
 ### 2.21 Type Annotated Code ([GSG221](https://google.github.io/styleguide/pyguide.html#221-type-annotated-code))
 
-**Difference**: Do *not* use type annotations.
+**Difference**: Do *not* use type annotations (a.k.a. type hints) unless you have a good reason to.
 
-**Reason**: Type annotations are useful for ensuring that simple functions do exactly what they're supposed to as part of a complex whole. They prioritize consistency over convenience, which is the correct priority for low-level library functions, but not for functions and classes that aim to make it as easy as possible for the user.
+**Reason**: Type hints are useful for ensuring that simple functions do exactly what they're supposed to as part of a complex whole. They prioritize consistency over convenience, which is the correct priority for low-level library functions, but not for functions and classes that aim to make it as easy as possible for the user.
 
-For example, in Covasim, dates can be specified as numbers (`22`), strings (`'2022-02-02'`), or date objects (`datetime.date(2022, 2, 2)`), etc. Likewise, many quantities can be specified as a scalar, list, or array. If a function *usually* only needs a single input but can optionally operate on more than one, it adds burden on the user to require them to provide e.g. `np.array([0.3])` rather than just `0.3`. In addition, most functions have default arguments of `None`, in which case Starsim will use "sensible" defaults.
+For example, in Starsim, dates can be specified as strings (`'2024-04-04'`), date objects (`datetime.date(2024, 4, 4)`), or custom `date` objects (`ss.date('2024.04.04')`). Likewise, many quantities can be specified as a scalar, list, or array. If a function *usually* only needs a single input but can optionally operate on more than one, it adds burden on the user to require them to provide e.g. `np.array([0.3])` rather than just `0.3`. In addition, most functions have default arguments of `None`, in which case Starsim will use "sensible" defaults.
 
 Attempting to apply type annotations to the flexibility Starsim gives to the user would result in monstrosities like:
 
 ```python
-def count_days(self, start_day: typing.Union[None, str, int, dt.date, dt.datetime],
-               end_day: typing.Union[None, str, int, dt.date, dt.datetime]) -> int:
+def count_days(self, start_day: typing.Union[None, str, ss.date, dt.date, dt.datetime],
+               end_day: typing.Union[None, str, ss.date, dt.date, dt.datetime]) -> int:
     return self.day(end_day) - self.day(start_day)
 ```
 
@@ -41,8 +41,8 @@ def count_days(self, start_day, end_day):
     """ Count days between start and end relative to "sim time"
 
     Args:
-        start_day (int/str/date): The day to start counting
-        end_day   (int/str/date): The day to stop counting
+        start_day (str/date): The day to start counting
+        end_day   (str/date): The day to stop counting
 
     Returns:
         elapsed (int): Number of whole days between start and end
@@ -55,6 +55,11 @@ def count_days(self, start_day, end_day):
 ```
 
 See the "Naming" section below for another example of why type hints are not usually used.
+
+#### Exceptions
+
+If you're writing code like `count_days`, or standard Starsim modules (e.g. interventions), you shouldn't need type hints. However, there are many cases where type hints are very useful. If you are passing large numbers of simple objects between functions, type annotations tend not to help much (as in the examples above). However, if you're passing a small number of complex objects between functions, they can be very helpful, especially for code introspection. For example, if you're working with AI agents and you're passing in a `RequestContext` and expecting a `ResultMessage` back, type hints can be very helpful in specifying that the API must be _exactly_ this.
+
 
 ### 3.2 Line length ([GSG32](https://google.github.io/styleguide/pyguide.html#32-line-length))
 
@@ -90,15 +95,15 @@ foo_bar(self, width, height, color='black', design=None, x='foo') # Note the dif
 
 ### 3.5 Blank Lines ([GSG35](https://google.github.io/styleguide/pyguide.html#35-blank-lines))
 
-**Difference**: Always use (at least) one extra blank line between levels as within a level.
+**Difference**: You *may* use one extra blank line between levels as within a level.
 
-**Reason**: Google's recommendation (two blank lines between functions or classes, one blank line between methods) is appropriate for small-to-medium classes and methods. However, for large methods (e.g. >50 lines) with multiple blank lines within them, using only a single blank line can make it hard to tell where one method stops and the next one starts. Thus, for a method that contains blank lines within itself, use *two* blank lines between methods (and then do that consistently for the rest of the class). For separating large classes/functions (>500 lines), or classes whose methods are separated by two blank lines, separating them by three blank lines is preferable.
+**Reason**: Google's recommendation (two blank lines between functions or classes, one blank line between methods) is appropriate for small-to-medium classes and methods. However, for large methods (e.g. >50 lines) with multiple blank lines within them, using only a single blank line can make it hard to tell where one method stops and the next one starts. THus, in cases where a class consists mostly of large methods that contains blank lines within themselves, you can use *two* blank lines between methods (and then do that consistently for the rest of the class). However, err on the side of using a single line between methods (and maybe try to refactor your overly-long methods into smaller, more modular ones).
 
-While not explicitly covered by the Google style guide, `return` statements should be used at the end of each function and method, even if that block returns `None` (in which case use `return`, not `return None`). This helps delimit larger methods/functions. However, always ask whether a function/method *should* return `None`. Following the pandas convention, many Starsim methods return `self`, which is what enables "chaining" patterns such as `cv.Sim().run().plot()`.
+While not explicitly covered by the Google style guide, `return` statements should be used at the end of each function and method, even if that block returns `None` (in which case use `return`, not `return None`). This helps delimit larger methods/functions. However, always ask whether a function/method *should* return `None`. Following the pandas convention, many Starsim methods return `self`, which is what enables "chaining" patterns such as `ss.Sim().run().plot()`.
 
 ### 3.6 Whitespace ([GSG36](https://google.github.io/styleguide/pyguide.html#36-whitespace))
 
-**Difference**: You *should* use spaces to vertically align tokens.
+**Difference**: You *may* use spaces to vertically align tokens when the content is semantically related, e.g. a list of parameter values.
 
 **Reason**: This convention, which is a type of [semantic indenting](https://gist.github.com/androidfred/66873faf9f0b76f595b5e3ea3537a97c), can greatly increase readability of the code by drawing attention to the semantic similarities and differences between consecutive lines.
 
@@ -131,16 +136,21 @@ In the second case, the typo (repeated `check_symptomatic()`)  immediately jumps
 Vertically aligned code blocks also make it easier to edit code using editors that allow multiline editing (e.g., [Sublime](https://www.sublimetext.com/)). However, use your judgement -- there are (many!) cases where it does more harm than good, especially if the block is small, or if egregious amounts of whitespace would need to be used to achieve alignment:
 
 ```python
-# Yes
+# Yes -- makes it much easier to read
 test_prob  = 0.1 # Per-day testing probability
 vax_prob   = 0.3 # Per-campaign vaccination probability
 trace_prob = 0.8 # Per-contact probability of being traced
 
-# Yes
+# No -- needlessly hard to read
+test_prob = 0.1 # Per-day testing probability
+vax_prob = 0.3 # Per-campaign vaccination probability
+trace_prob = 0.8 # Per-contact probability of being traced
+
+# Yes -- two non-comparable variables, and of very different lengths
 t = 0 # Start day
 omicron_vax_prob = dict(low=0.05, high=0.1) # Per-day probability of receiving Omicron vaccine
 
-# Hell no
+# No -- impossible to read the first line
 t                = 0                        # Start day
 omicron_vax_prob = dict(low=0.05, high=0.1) # Per-day probability of receiving Omicron vaccine
 ```
