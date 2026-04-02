@@ -27,6 +27,10 @@ p:has(+ ul) {
   width: 100%;
 }
 
+.navbar-title {
+  text-align: center;
+}
+
 #quarto-document-content {
   margin-top: 0;
   padding-top: 0 !important;

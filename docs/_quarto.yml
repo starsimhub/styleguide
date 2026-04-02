@@ -27,8 +27,8 @@ website:
 
   navbar:
     logo: /assets/starsim-logo.png
-    title: Starsim Style Guide
-    collapse-below: lg
+    title: "Starsim Style Guide"
+    collapse: false
 
     tools:
       - icon: github
