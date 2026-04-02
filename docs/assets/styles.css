@@ -36,6 +36,11 @@ p:has(+ ul) {
   text-align: center;
 }
 
+.navbar-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
 #quarto-document-content {
   margin-top: 0;
   padding-top: 0 !important;
