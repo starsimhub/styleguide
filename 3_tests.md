@@ -13,9 +13,10 @@ Before getting into the mechanics, here are the core principles that should guid
 
 A test is often the first piece of working code that a new contributor (or user) will read. Write your tests as if they are **examples of how to interact with the models**. They should expose preferred pathways and APIs -- someone reading `test_sir()` should come away understanding the recommended way to set up and run an SIR simulation.
 
-### Write for multiple audiences
+### Write for humans
 
-Our models have multiple user personas: epidemiologists who want to run a quick scenario, developers building new disease modules, researchers calibrating to data. Ideally, the tests you write will clearly lay out the best path for each user type. There *will* be multiple ways of doing things -- this is the Pythonic way, and it's the Starsim philosophy -- but there will generally be one **best** way for each particular use case. Expose this.
+While you definitely _should_ include `assert` statements in your tests, you should also include human-digestible output: summary results printed to the terminal, plots, or both. This is so the person running the test can notice things that would be impossible to write an `assert` statement for (e.g. "Huh, I don't remember the infections peak looking like that").
+
 
 ### Tests, not analyses
 
@@ -65,9 +66,18 @@ def test_feature(do_plot=do_plot):
     sc.heading('Testing feature...')
     sim = make_sim()
     sim.run()
-    assert sim.results.something > 0, 'Expected something to be positive'
-    if do_plot:
+    something = sim.results.something
+
+    # Print a meaningful summary of the test (optional, encouraged)
+    print(f'Results summary:  {something.mean()}') 
+
+     # Make an assertion about expected behavior -- the most important part
+    assert something.max() > 0, f'Expected something to be positive, but {something.max()} <= 0'
+
+    # Include a plot (optional, encouraged), but always have an option to turn it off
+    if do_plot: 
         sim.plot()
+
     return sim
 
 
@@ -95,8 +105,12 @@ def test_simple_vax(do_plot=do_plot):
 
     sim_base = ss.Sim(pars=pars).run()
     sim_intv = ss.Sim(pars=pars, interventions=intv).run()
+    inf_base = sim_base.summary.sir_cum_infections
+    inf_intv = sim_intv.summary.sir_cum_infections
 
-    assert sim_intv.summary.sir_cum_infections < sim_base.summary.sir_cum_infections, 'Vaccine should avert infections'
+    print(f'Infections without vaccine: {inf_base}')
+    print(f'Infections with vaccine {inf_intv}')
+    assert inf_intv < inf_base, 'Vaccine should avert infections'
 
     if do_plot:
         plt.figure()
@@ -307,7 +321,7 @@ The `SCIRIS_BACKEND=agg` environment variable is set in the test runner scripts 
 Good tests should:
 
 - **Be scientific**: test that the model behaves as epidemiologically expected, not just that code runs without errors.
-- **Be examples**: a new user reading your test should learn the recommended way to use the API.
+- **Be examples**: a new user reading and running your test should learn the recommended way to use the API and what it does.
 - **Be debuggable**: return objects, support plotting, and print informative output so failures can be investigated interactively.
 - **Be stable**: use tolerances appropriate for stochastic models; a test that fails 1% of the time due to randomness is worse than no test.
 - **Be fast**: use the smallest agent count that produces meaningful results; save large-scale tests for benchmarks.
