@@ -233,15 +233,13 @@ import os
 import shutil
 import numpy as np
 import pandas as pd
-import pylab as pl
+import matplotlib.pyplot as plt
 import seaborn as sns
 from .covasim import defaults as cvd
 from .covasim import plotting as cvpl
 ```
 
 Note the logical groupings -- standard library imports first, then numeric libraries, with Numpy coming before pandas since it's lower level (i.e., Numpy is a dependency of pandas); then external plotting libraries; and finally internal imports. (In this particular example, Google's import order would be identical, but for a different reason -- `numpy` would come before `seaborn` because it's first alphabetically, not because it's lower level.)
-
-Note also the use of `import pylab as pl` instead of the more common `import matplotlib.pyplot as plt`. These are functionally identical; the former is used simply because it is easier to type, but this convention may change to the more standard Matplotlib import in future.
 
 ### 3.14 Statements ([GSG314](https://google.github.io/styleguide/pyguide.html#314-statements))
 
