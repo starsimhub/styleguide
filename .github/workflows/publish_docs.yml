@@ -1,0 +1,31 @@
+# Rebuild and publish the site to GitHub Pages on pushes
+# to main, or manually.
+
+name: Publish docs
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Quarto
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Set up Quarto
+      uses: quarto-dev/quarto-actions/setup@v2
+
+    - name: Quarto publish
+      working-directory: ./docs
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@users.noreply.github.com"
+        quarto publish gh-pages --no-prompt --no-browser
